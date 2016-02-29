@@ -20,8 +20,8 @@ if (Meteor.isClient) {
     // find a chat that has two users that match current user id
     // and the requested user id
     var filter = {$or:[
-                {user1Id:Meteor.userId(), user2Id:otherUserId}, 
-                {user2Id:Meteor.userId(), user1Id:otherUserId}
+                {user1Id:Meteor.userId(), user2Id:otherUserId},                 
+                {user1Id:otherUserId, user2Id:Meteor.userId()}
                 ]};
     var chat = Chats.findOne(filter);
     if (!chat){// no chat matching the filter - need to insert a new one
