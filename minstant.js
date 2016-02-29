@@ -32,7 +32,6 @@ if (Meteor.isClient) {
     }
     if (chatId){// looking good, save the id to the session
       Session.set("chatId",chatId);
-      Session.set("txUser",otherUserId);
     }
     this.render("navbar", {to:"header"});
     this.render("chat_page", {to:"main"});  
@@ -95,13 +94,6 @@ if (Meteor.isClient) {
       chat.messages = msgs;
       // update the chat object in the database.
       Chats.update(chat._id, chat);
-      console.log(Session.get("txUser"));
-      // User1 is current one
-      // User2 is the remote one
-      var localUser  = Meteor.users.findOne({_id:chat.user1Id});
-      var remoteUser = Meteor.users.findOne({_id:chat.user2Id});
-      console.log(localUser.profile.avatar);
-      console.log(remoteUser);
     }
   }
  })
