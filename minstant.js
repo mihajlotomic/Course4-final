@@ -67,10 +67,19 @@ if (Meteor.isClient) {
       var chat = Chats.findOne({_id:Session.get("chatId")});
       return chat.messages;
     }, 
-    other_user:function(){
-      return ""
+    other_user_username:function(){
+      var chat = Chats.findOne({_id:Session.get("chatId")});
+      if (chat) {return chat.users};
     }, 
-
+    other_user_avatar:function(){
+      var chat = Chats.findOne({_id:Session.get("chatId")});
+      if (chat) {return chat.users} ;
+    },
+    isReady:function(){
+      var chat = Chats.findOne({_id:Session.get("chatId")});
+      if (chat) { return true; } 
+      else { return false; }
+      }
   })
  Template.chat_page.events({
   // this event fires when the user sends a message on the chat page
@@ -85,24 +94,43 @@ if (Meteor.isClient) {
       if (!msgs){// no messages yet, create a new array
         msgs = [];
       }
+      var users = chat.users;
+      if (!users){
+        users = [];
+      }
+      
+
       // is a good idea to insert data straight from the form
       // (i.e. the user) into the database?? certainly not. 
       // push adds the message to the end of the array
+      var localUser  = Meteor.users.findOne({_id:chat.user1Id});
+      var remoteUser = Meteor.users.findOne({_id:chat.user2Id});
+          
+      users.push({user2Profile:remoteUser.avatar});
+      
+      console.log("users = " + users );
+      
       msgs.push({text: event.target.chat.value});
+
+      console.log(msgs);
       // reset the form
       event.target.chat.value = "";
       // put the messages array onto the chat object
+        
+      chat.users = users;
+            
       chat.messages = msgs;
       // update the chat object in the database.
       Chats.update(chat._id, chat);
       // User1 is current one
       // User2 is the remote one
-      var localUser  = Meteor.users.findOne({_id:chat.user1Id});
-      var remoteUser = Meteor.users.findOne({_id:chat.user2Id});
+
       console.log(localUser.profile.avatar);
       console.log(remoteUser);      
       // Update Chats with the avatar and user name info - this will be 
-      // reflected in the template.helper and can then be used for display.
+      // reflected in the template.helper and can then be used for display.      
+      //Chats.upsert(chat._id, {user1Profile:localUser.profile});
+      //Chats.upsert(chat._id, {user2Profile:remoteUser.profile});
     }
   }
  })
