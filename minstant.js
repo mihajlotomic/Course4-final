@@ -86,7 +86,15 @@ if (Meteor.isClient) {
       var chat = Chats.findOne({_id:Session.get("chatId")});
       if (chat) { return true; } 
       else { return false; }
+      },
+    isMyUser:function(userId){
+      if (userId == Meteor.userId()){
+        return true;
       }
+      else {
+        return false;
+      }
+    }
   })
  Template.chat_page.events({
   // this event fires when the user sends a message on the chat page
@@ -110,8 +118,8 @@ if (Meteor.isClient) {
       // is a good idea to insert data straight from the form
       // (i.e. the user) into the database?? certainly not. 
       // push adds the message to the end of the array
-      //var localUser  = Meteor.users.findOne({_id:chat.user1Id});
-      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});
+      var localUser  = Meteor.users.findOne({_id:Meteor.userId()});
+      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});    
           
       users.push({remoteUserAvatar:remoteUser.profile.avatar});
       users.push({remoteUserUsername:remoteUser.profile.username});
@@ -119,7 +127,11 @@ if (Meteor.isClient) {
       //Chats.findOne({_id:Session.get("chatId")}).messages[0].text
       console.log("remtoe users = " +users) ;
       
-      msgs.push({text: event.target.chat.value});
+      var element = {
+        avatar:localUser.profile.avatar,
+        text: event.target.chat.value
+      }
+      msgs.push(element);
 
       console.log(msgs);
       // reset the form
