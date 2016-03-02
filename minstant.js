@@ -69,11 +69,18 @@ if (Meteor.isClient) {
     }, 
     other_user_username:function(){
       var chat = Chats.findOne({_id:Session.get("chatId")});
-      if (chat) {return chat.users};
+      if ( chat.users) { 
+        return chat.users[chat.users.length-1].remoteUserUsername; 
+      }
+      else 
+        return;
     }, 
     other_user_avatar:function(){
       var chat = Chats.findOne({_id:Session.get("chatId")});
-      if (chat) {return chat.users} ;
+      if ( chat.users) { 
+        return chat.users[chat.users.length-2].remoteUserAvatar; 
+      }
+      else return;
     },
     isReady:function(){
       var chat = Chats.findOne({_id:Session.get("chatId")});
@@ -103,12 +110,14 @@ if (Meteor.isClient) {
       // is a good idea to insert data straight from the form
       // (i.e. the user) into the database?? certainly not. 
       // push adds the message to the end of the array
-      var localUser  = Meteor.users.findOne({_id:chat.user1Id});
-      var remoteUser = Meteor.users.findOne({_id:chat.user2Id});
+      //var localUser  = Meteor.users.findOne({_id:chat.user1Id});
+      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});
           
-      users.push({user2Profile:remoteUser.avatar});
-      
-      console.log("users = " + users );
+      users.push({remoteUserAvatar:remoteUser.profile.avatar});
+      users.push({remoteUserUsername:remoteUser.profile.username});
+      //Chats.findOne({_id:Session.get("chatId")}).users[0].remoteUser.avatar
+      //Chats.findOne({_id:Session.get("chatId")}).messages[0].text
+      console.log("remtoe users = " +users) ;
       
       msgs.push({text: event.target.chat.value});
 
@@ -125,7 +134,7 @@ if (Meteor.isClient) {
       // User1 is current one
       // User2 is the remote one
 
-      console.log(localUser.profile.avatar);
+      //console.log(localUser.profile.avatar);
       console.log(remoteUser);      
       // Update Chats with the avatar and user name info - this will be 
       // reflected in the template.helper and can then be used for display.      
