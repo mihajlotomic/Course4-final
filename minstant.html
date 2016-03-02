@@ -73,18 +73,11 @@
 		<div class="col-md-12">
 			<div class="well well-lg">              
               <br>                
-           <!--{{#each other_user_avatar}}              
-			{{> user_profile}}           
-			{{/each}}
-              -->
-            {{#each messages}}   
 
-            
-<!--            {{other_user_avatar}}-->
-              <img src="/{{other_user_avatar}}" class="avatar_img">	  
-              <strong>{{other_user_username}}</strong> Says:
-			{{> chat_message}}
-			{{/each}}
+            {{#each messages}}   
+              {{> chat_message}}
+            {{/each}}
+
 			</div>	
 		</div>
 	</div>
@@ -100,7 +93,7 @@
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	{{text}}
+	<img src="/{{avatar}}" class="avatar_img"> Says: {{text}}
 	<br>
 </template>
 
