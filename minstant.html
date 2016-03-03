@@ -68,7 +68,7 @@
 
 <!-- Top level template for the chat page -->
 <template name="chat_page">
-	<h2>Type in the box below to send a message!</h2>
+	<h2>Type in the box below to send a message {{getUsername _id}}!</h2>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="well well-lg">              
@@ -93,7 +93,7 @@
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> {{username}} said: {{text}}
+	<img src="/{{avatar}}" class="avatar_img"> {{username}} said : {{text}}
 	<br>
 </template>
 

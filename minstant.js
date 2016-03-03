@@ -1,6 +1,10 @@
 Chats = new Mongo.Collection("chats");
 
 if (Meteor.isClient) {
+  
+  Meteor.subscribe('chats');
+  Meteor.subscribe("users");
+  
   // set up the main template the the router will use to build pages
   Router.configure({
     layoutTemplate: 'ApplicationLayout'
@@ -80,6 +84,11 @@ if (Meteor.isClient) {
       else {
         return false;
       }
+    },
+    getUsername:function(userId){
+      user = Meteor.users.findOne({_id:userId});
+      console.log("user grabbed here for chat_page _id = " + userId)
+      return user.profile.username;
     }
   })
  Template.chat_page.events({
@@ -108,16 +117,17 @@ if (Meteor.isClient) {
       msgs.push(element);
 
 
-      console.log(msgs);
+      console.log("chat passed to method = " + Session.get("chatId") );
       // reset the form
       event.target.chat.value = "";
       // put the messages array onto the chat object
             
       chat.messages = msgs;
       // update the chat object in the database.
-      Chats.update(chat._id, chat);
-
-      console.log(remoteUser);      
+      
+      Meteor.call("updateChat", chat);
+      //Chats.update(chat._id, chat);
+      //console.log(remoteUser);      
 
     }
   }
@@ -130,6 +140,29 @@ if (Meteor.isClient) {
 // and the password test123 
 
 if (Meteor.isServer) {
+
+  Meteor.publish("chats", function(){
+    return Chats.find({});
+  }); 
+  Meteor.publish("users", function(){
+    return Meteor.users.find({});
+  });  
+  
+  //Methods implement write security 
+  //by constraining the allowing writes
+  //to the database.
+  Meteor.methods( {
+    updateChat: function(doc){
+      //User must be logged in to make changes
+      if (Meteor.userId() ) {        
+        Chats.update(doc._id, doc)
+        console.log("in method!");
+      }
+    }
+    
+  });
+  
+  
   Meteor.startup(function () {
     if (!Meteor.users.findOne()){
       for (var i=1;i<9;i++){
