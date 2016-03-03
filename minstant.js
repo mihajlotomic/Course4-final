@@ -36,6 +36,7 @@ if (Meteor.isClient) {
     }
     if (chatId){// looking good, save the id to the session
       Session.set("chatId",chatId);
+      console.log("other user = " + otherUserId);
       Session.set("txUser",otherUserId);
     }
     this.render("navbar", {to:"header"});
@@ -145,15 +146,20 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
   Meteor.publish("chats", function(){
-    return Chats.find({$or:[
-      {user1Id: this.userId},
-      {user2Id: this.userId}      
-    ]});
-    
+    if (this.userId ) {
+      return Chats.find({$or:[
+          {user1Id: this.userId},
+          {user2Id: this.userId}      
+          ]    
+      });
+    }        
     console.log("publish = " + this.userId);
+    return false;
   }); 
   Meteor.publish("users", function(){
-    return Meteor.users.find({});
+    var cursor = Meteor.users.find({});
+    console.log(cursor.count());
+    return cursor;
   });  
   
   //Methods implement write security 
