@@ -93,24 +93,11 @@
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> Says: {{text}}
+	<img src="/{{avatar}}" class="avatar_img"> {{username}} said: {{text}}
 	<br>
 </template>
 
-<!-- simple template that displays a message -->
-<template name="user_profile_name">
-  <div class="alert alert-info">
-    <strong>{{other_user_username}}</strong>
-  </div>
-  <br>
-</template>
 
-
-<!-- simple template that displays a message -->
-<template name="user_profile">
-	<img src="/{{other_user_avatar}}" class="avatar_img">	 
-	<br>
-</template>
 
 
 
