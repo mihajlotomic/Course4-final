@@ -2,7 +2,7 @@ Chats = new Mongo.Collection("chats");
 
 if (Meteor.isClient) {
   
-  Meteor.subscribe('chats');
+  Meteor.subscribe("chats");
   Meteor.subscribe("users");
   
   // set up the main template the the router will use to build pages
@@ -108,7 +108,10 @@ if (Meteor.isClient) {
       // (i.e. the user) into the database?? certainly not. 
       // push adds the message to the end of the array
       var localUser  = Meteor.users.findOne({_id:Meteor.userId()});
-      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});                    
+      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});  
+      
+      console.log("local user = " +localUser);
+      
       var element = {
         avatar:localUser.profile.avatar,
         username:localUser.profile.username,
@@ -142,7 +145,12 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
   Meteor.publish("chats", function(){
-    return Chats.find({});
+    return Chats.find({$or:[
+      {user1Id: this.userId},
+      {user2Id: this.userId}      
+    ]});
+    
+    console.log("publish = " + this.userId);
   }); 
   Meteor.publish("users", function(){
     return Meteor.users.find({});
