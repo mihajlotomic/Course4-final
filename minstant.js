@@ -88,9 +88,8 @@ if (Meteor.isClient) {
       }
     },
     getUsername:function(userId){
-      user = Meteor.users.findOne({_id:userId});
-      console.log("user grabbed here for chat_page _id = " + userId)
-      return user.profile.username;
+      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});  
+      return remoteUser.profile.username;
     }
   })
  Template.chat_page.events({
