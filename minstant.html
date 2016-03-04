@@ -93,7 +93,10 @@
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> {{username}} said : {{text}}
+	<img src="/{{avatar}}" class="avatar_img"> {{username}} said :
+      {{#emoji}}
+        {{text}}
+      {{/emoji}}
 	<br>
 </template>
 

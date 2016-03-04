@@ -4,6 +4,7 @@ if (Meteor.isClient) {
   
   Meteor.subscribe("chats");
   Meteor.subscribe("users");
+  Meteor.subscribe('emojis');
   
   // set up the main template the the router will use to build pages
   Router.configure({
@@ -161,6 +162,12 @@ if (Meteor.isServer) {
     console.log(cursor.count());
     return cursor;
   });  
+  
+  Meteor.publish('emojis', function() {
+  // Here you can choose to publish a subset of all emojis
+  // if you'd like to.
+  return Emojis.find();
+});
   
   //Methods implement write security 
   //by constraining the allowing writes
