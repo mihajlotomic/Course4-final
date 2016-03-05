@@ -37,12 +37,12 @@
 
 <!-- display a list of users -->
 <template name="available_user_list">
-	<h2>Choose someone to chat with:</h2>
-	<div class="row">
-	{{#each users}}
-	{{> available_user}}
-	{{/each}}
-</div>
+  <h2>Choose someone to chat with:</h2>
+    <div class="row">
+	 {{#each users}}
+	 {{> available_user}}
+	 {{/each}}
+    </div>
 </template>
 
 <!-- display an individual user -->
@@ -68,7 +68,7 @@
 
 <!-- Top level template for the chat page -->
 <template name="chat_page">
-	<h2>Type in the box below to send a message!</h2>
+	<h2>Type in the box below to send a message to {{getUsername}}!</h2>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="well well-lg">              
@@ -83,17 +83,25 @@
 	</div>
     <div class="row">
 		<div class="col-md-12">
-			<form class="js-send-chat">
-			<input class="input" type="text" name="chat" placeholder="type a message here...">
-			<button class="btn btn-default">send</button>
-		</form>
+          <!--<div class="input-group">-->
+          <div class="input-group input-group-lg">
+          <form class="form-inline js-send-chat">
+			<input class="input" type="text form-control " name="chat" placeholder="type a message here...">
+            <span class="input-group-btn">
+			 <button type="submit" class="btn btn-primary">send</button>
+            </span>
+		  </form>
 		</div>
+      </div>
 	</div>
 </template>
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> {{username}} said : {{text}}
+	<img src="/{{avatar}}" class="avatar_img"> {{username}} said :
+      {{#emoji}}
+        {{text}}
+      {{/emoji}}
 	<br>
 </template>
 

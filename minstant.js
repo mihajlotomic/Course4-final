@@ -4,6 +4,7 @@ if (Meteor.isClient) {
   
   Meteor.subscribe("chats");
   Meteor.subscribe("users");
+  Meteor.subscribe('emojis');
   
   // set up the main template the the router will use to build pages
   Router.configure({
@@ -87,9 +88,8 @@ if (Meteor.isClient) {
       }
     },
     getUsername:function(userId){
-      user = Meteor.users.findOne({_id:userId});
-      console.log("user grabbed here for chat_page _id = " + userId)
-      return user.profile.username;
+      var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});  
+      return remoteUser.profile.username;
     }
   })
  Template.chat_page.events({
@@ -161,6 +161,12 @@ if (Meteor.isServer) {
     console.log(cursor.count());
     return cursor;
   });  
+  
+  Meteor.publish('emojis', function() {
+  // Here you can choose to publish a subset of all emojis
+  // if you'd like to.
+  return Emojis.find();
+});
   
   //Methods implement write security 
   //by constraining the allowing writes
