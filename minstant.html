@@ -37,12 +37,12 @@
 
 <!-- display a list of users -->
 <template name="available_user_list">
-	<h2>Choose someone to chat with:</h2>
-	<div class="row">
-	{{#each users}}
-	{{> available_user}}
-	{{/each}}
-</div>
+  <h2>Choose someone to chat with:</h2>
+    <div class="row">
+	 {{#each users}}
+	 {{> available_user}}
+	 {{/each}}
+    </div>
 </template>
 
 <!-- display an individual user -->
@@ -68,7 +68,7 @@
 
 <!-- Top level template for the chat page -->
 <template name="chat_page">
-	<h2>Type in the box below to send a message {{getUsername}}!</h2>
+	<h2>Type in the box below to send a message to {{getUsername}}!</h2>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="well well-lg">              
