@@ -1,4 +1,17 @@
 Chats = new Mongo.Collection("chats");
+Comments = new Mongo.Collection("comments");
+
+// set up a schema controlling the allowable 
+// structure of comment objects
+Comments.attachSchema(new SimpleSchema({
+  body:{
+    type: String,
+    label: "Comment",
+    max: 1000  	
+  }
+}));
+
+
 
 if (Meteor.isClient) {
   
@@ -67,7 +80,6 @@ if (Meteor.isClient) {
     }
   })
 
-
   Template.chat_page.helpers({
     messages:function(){
       var chat = Chats.findOne({_id:Session.get("chatId")});
@@ -116,14 +128,14 @@ if (Meteor.isClient) {
       var element = {
         avatar:localUser.profile.avatar,
         username:localUser.profile.username,
-        text: event.target.chat.value
+        text: event.target.msg.value
       }
       msgs.push(element);
 
 
       console.log("chat passed to method = " + Session.get("chatId") );
       // reset the form
-      event.target.chat.value = "";
+      event.target.msg.value = "";
       // put the messages array onto the chat object
             
       chat.messages = msgs;
@@ -142,6 +154,16 @@ if (Meteor.isClient) {
 // start up script that creates some users for testing
 // users have the username 'user1@test.com' .. 'user8@test.com'
 // and the password test123 
+Meteor.methods( {
+  addComment: function(comment){
+    console.log("addComment method running!");
+    if (this.userId){// we have a user      
+      comment.userId = this.userId;
+      return Comments.insert(comment);
+    }
+    return;
+  }
+})
 
 if (Meteor.isServer) {
 
@@ -178,8 +200,7 @@ if (Meteor.isServer) {
         Chats.update(doc._id, doc)
         console.log("in method!");
       }
-    }
-    
+    },    
   });
   
   
