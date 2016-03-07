@@ -1,17 +1,9 @@
 Chats = new Mongo.Collection("chats");
-Comments = new Mongo.Collection("comments");
-
-// set up a schema controlling the allowable 
-// structure of comment objects
-Comments.attachSchema(new SimpleSchema({
-  body:{
-    type: String,
-    label: "Comment",
-    max: 1000  	
-  }
-}));
 
 
+////////////////////////
+///// CLIENT
+////////////////////////
 
 if (Meteor.isClient) {
   
@@ -43,7 +35,8 @@ if (Meteor.isClient) {
                 ]};
     var chat = Chats.findOne(filter);
     if (!chat){// no chat matching the filter - need to insert a new one
-      chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
+      //chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
+      Meteor.call("insertChat", otherUserId);
     }
     else {// there is a chat going already - use that. 
       chatId = chat._id;
@@ -150,20 +143,14 @@ if (Meteor.isClient) {
  })
 }
 
+////////////////////////
+///// SERVER
+////////////////////////
+
 
 // start up script that creates some users for testing
 // users have the username 'user1@test.com' .. 'user8@test.com'
 // and the password test123 
-Meteor.methods( {
-  addComment: function(comment){
-    console.log("addComment method running!");
-    if (this.userId){// we have a user      
-      comment.userId = this.userId;
-      return Comments.insert(comment);
-    }
-    return;
-  }
-})
 
 if (Meteor.isServer) {
 
@@ -189,19 +176,51 @@ if (Meteor.isServer) {
   // if you'd like to.
   return Emojis.find();
 });
-  
+////////////////////////
+///// METHODS
+////////////////////////
   //Methods implement write security 
   //by constraining the allowing writes
   //to the database.
-  Meteor.methods( {
-    updateChat: function(doc){
+Meteor.methods( {
+  insertChat: function(otherId){
       //User must be logged in to make changes
-      if (Meteor.userId() ) {        
+     console.log("insert method running!");
+      if (this.userId ) {        
+        chatId = Chats.insert({user1Id:this.userId,        user2Id:otherId});        
+      }
+      return;
+  },
+  updateChat: function(doc){
+      //User must be logged in to make changes
+     console.log("updateChat method running!");
+      if (this.userId ) {        
         Chats.update(doc._id, doc)
         console.log("in method!");
       }
-    },    
-  });
+      return;
+  },
+  addComment: function(comment){
+    console.log("addComment method running!");
+    if (this.userId){// we have a user      
+      comment.userId = this.userId;
+      return Comments.insert(comment);
+    }
+    return;
+  }
+})
+  
+
+Chats.deny({
+  update: function (userId, doc, fields, modifier) {
+    // can't change owners
+    return _.contains(fields, 'owner');
+  },
+  remove: function (userId, doc) {
+    // can't remove locked documents
+    return doc;
+  }
+});
   
   
   Meteor.startup(function () {
