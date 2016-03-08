@@ -82,24 +82,26 @@
 		</div>
 	</div>
     <div class="row">
-		<div class="col-md-12">
+		<div class="col-lg-6">
           <!--<div class="input-group">-->
-          <div class="input-group input-group-lg">
-          <form class="form-inline js-send-chat">
-			<input class="input" type="text form-control " name="chat" placeholder="type a message here...">
-            <span class="input-group-btn">
-			 <button type="submit" class="btn btn-primary">send</button>
-            </span>
-		  </form>
-		</div>
+         
+              <form role="form" class="form-inline js-send-chat">		
+                <div class="form-group">
+                  <label for="msg">Message to send:</label>
+                  <input type="msg" class="form-control" name="msg">                              
+                </div>
+                <button type="submit" class="btn btn-primary">send</button>
+          </form>
+
       </div>
 	</div>
+    <!--{{> insertChat}}-->
 </template>
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> {{username}} said :
-      {{#emoji}}
+	<img src="/{{avatar}}" class="avatar_img"> {{username}} said :  
+      {{#emoji}}      
         {{text}}
       {{/emoji}}
 	<br>

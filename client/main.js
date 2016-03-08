@@ -1,10 +1,8 @@
-Chats = new Mongo.Collection("chats");
-
-if (Meteor.isClient) {
-  
-  Meteor.subscribe("chats");
-  Meteor.subscribe("users");
-  Meteor.subscribe('emojis');
+ Tracker.autorun(function () {
+    Meteor.subscribe("chats");
+    Meteor.subscribe("users");
+    Meteor.subscribe('emojis');
+  });
   
   // set up the main template the the router will use to build pages
   Router.configure({
@@ -30,7 +28,8 @@ if (Meteor.isClient) {
                 ]};
     var chat = Chats.findOne(filter);
     if (!chat){// no chat matching the filter - need to insert a new one
-      chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
+      //chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
+      Meteor.call("insertChat", otherUserId);
     }
     else {// there is a chat going already - use that. 
       chatId = chat._id;
@@ -66,7 +65,6 @@ if (Meteor.isClient) {
       }
     }
   })
-
 
   Template.chat_page.helpers({
     messages:function(){
@@ -116,14 +114,14 @@ if (Meteor.isClient) {
       var element = {
         avatar:localUser.profile.avatar,
         username:localUser.profile.username,
-        text: event.target.chat.value
+        text: event.target.msg.value
       }
       msgs.push(element);
 
 
       console.log("chat passed to method = " + Session.get("chatId") );
       // reset the form
-      event.target.chat.value = "";
+      event.target.msg.value = "";
       // put the messages array onto the chat object
             
       chat.messages = msgs;
@@ -136,62 +134,3 @@ if (Meteor.isClient) {
     }
   }
  })
-}
-
-
-// start up script that creates some users for testing
-// users have the username 'user1@test.com' .. 'user8@test.com'
-// and the password test123 
-
-if (Meteor.isServer) {
-
-  Meteor.publish("chats", function(){
-    if (this.userId ) {
-      return Chats.find({$or:[
-          {user1Id: this.userId},
-          {user2Id: this.userId}      
-          ]    
-      });
-    }        
-    console.log("publish = " + this.userId);
-    return false;
-  }); 
-  Meteor.publish("users", function(){
-    var cursor = Meteor.users.find({});
-    console.log(cursor.count());
-    return cursor;
-  });  
-  
-  Meteor.publish('emojis', function() {
-  // Here you can choose to publish a subset of all emojis
-  // if you'd like to.
-  return Emojis.find();
-});
-  
-  //Methods implement write security 
-  //by constraining the allowing writes
-  //to the database.
-  Meteor.methods( {
-    updateChat: function(doc){
-      //User must be logged in to make changes
-      if (Meteor.userId() ) {        
-        Chats.update(doc._id, doc)
-        console.log("in method!");
-      }
-    }
-    
-  });
-  
-  
-  Meteor.startup(function () {
-    if (!Meteor.users.findOne()){
-      for (var i=1;i<9;i++){
-        var email = "user"+i+"@test.com";
-        var username = "user"+i;
-        var avatar = "ava"+i+".png"
-        console.log("creating a user with password 'test123' and username/ email: "+email);
-        Meteor.users.insert({profile:{username:username, avatar:avatar}, emails:[{address:email}],services:{ password:{"bcrypt" : "$2a$10$I3erQ084OiyILTv8ybtQ4ON6wusgPbMZ6.P33zzSDei.BbDL.Q4EO"}}});
-      }
-    } 
-  });
-}
