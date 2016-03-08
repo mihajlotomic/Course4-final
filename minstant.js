@@ -7,9 +7,11 @@ Chats = new Mongo.Collection("chats");
 
 if (Meteor.isClient) {
   
-  Meteor.subscribe("chats");
-  Meteor.subscribe("users");
-  Meteor.subscribe('emojis');
+  Tracker.autorun(function () {
+    Meteor.subscribe("chats");
+    Meteor.subscribe("users");
+    Meteor.subscribe('emojis');
+  });
   
   // set up the main template the the router will use to build pages
   Router.configure({
@@ -211,16 +213,16 @@ Meteor.methods( {
 })
   
 
-Chats.deny({
-  update: function (userId, doc, fields, modifier) {
+  Chats.deny({
+    update: function (userId, doc, fields, modifier) {
     // can't change owners
     return _.contains(fields, 'owner');
-  },
-  remove: function (userId, doc) {
-    // can't remove locked documents
+    },
+    remove: function (userId, doc) {
+      // can't remove locked documents
     return doc;
-  }
-});
+    }
+  });
   
   
   Meteor.startup(function () {
