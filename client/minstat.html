@@ -87,24 +87,31 @@
          
               <form role="form" class="form-inline js-send-chat">		
                 <div class="form-group">
-                  <label for="msg">Message to send:</label>
-                  <input type="msg" class="form-control" name="msg">                              
+                  <label for="msg">Message to send:</label>              
+                  <br>
+                  <!--<input type="msg" class="form-control" name="msg">  -->
+                  <textarea type="msg" name="msg" class = "form-control" rows = "3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">send</button>
           </form>
 
       </div>
 	</div>
+  {{#each emojis}}
+    {{ascii}} {{emoji}}
+  {{/each}}
     <!--{{> insertChat}}-->
 </template>
 
 <!-- simple template that displays a message -->
 <template name="chat_message">
-	<img src="/{{avatar}}" class="avatar_img"> {{username}} said :  
+	<img src="/{{avatar}}" class="avatar_img"> {{username }} {{ > emoji ':speech_balloon:'}} :  
       {{#emoji}}      
         {{text}}
       {{/emoji}}
 	<br>
+  
+     
 </template>
 
 

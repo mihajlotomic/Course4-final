@@ -1,4 +1,12 @@
- Tracker.autorun(function () {
+//Tests:
+//Chats.find().forEach(function(chat){console.log(chat.user1Id == Meteor.userId() || chat.user2Id == Meteor.userId());});
+// Should return false
+
+// Chats.insert({})
+
+
+
+Tracker.autorun(function () {
     Meteor.subscribe("chats");
     Meteor.subscribe("users");
     Meteor.subscribe('emojis');
@@ -88,6 +96,10 @@
     getUsername:function(userId){
       var remoteUser = Meteor.users.findOne({_id:Session.get("txUser")});  
       return remoteUser.profile.username;
+    },
+    emojis:function(){
+      var emoj =  Emojis.find().forEach();
+      
     }
   })
  Template.chat_page.events({
