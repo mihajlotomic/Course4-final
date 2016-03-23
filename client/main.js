@@ -73,7 +73,7 @@ Tracker.autorun(function () {
       }
     }
   })
-
+  var emoj;
   Template.chat_page.helpers({
     messages:function(){
       var chat = Chats.findOne({_id:Session.get("chatId")});
@@ -98,7 +98,9 @@ Tracker.autorun(function () {
       return remoteUser.profile.username;
     },
     emojis:function(){
-      var emoj =  Emojis.find().forEach();
+      
+      //Emojis.find().forEach(function(doc) {console.log("emoj = " + doc.emoji)});
+      return Emojis.findOne().emoji;
       
     }
   })
