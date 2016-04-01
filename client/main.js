@@ -100,7 +100,7 @@ Tracker.autorun(function () {
     emojis:function(){
       
       //Emojis.find().forEach(function(doc) {console.log("emoj = " + doc.emoji)});
-      return Emojis.findOne().emoji;
+       Emojis.findOne().emoji;
       
     }
   })
