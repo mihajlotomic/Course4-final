@@ -2,7 +2,9 @@
 
 The page can be found here: 
 
-mihajlochat.meteor.com
+~~mihajlochat.meteor.com~~
+
+Metoer is no longer hosting temporary test sites. Hosting location is still undetermined.
 
 The sample username / passwords are: user{1..8}@test.com / test123
 
